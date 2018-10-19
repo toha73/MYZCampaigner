@@ -1,0 +1,112 @@
+﻿@{
+    Layout = "_FluidLayout";
+}
+@section Header {
+
+    <script src='https://unpkg.com/panzoom@6.3.0/dist/panzoom.min.js'></script>
+
+}
+@section Scripts {
+
+    <script type="text/javascript">
+
+        window.addEventListener('load', () => {
+
+            var area = document.querySelector('.map');
+            var mapImage = document.querySelector('.map img');
+            var canvas = document.getElementById('canvas');
+            canvas.setAttribute('width', mapImage.width);
+            canvas.setAttribute('height', mapImage.height);
+
+            var ctx = canvas.getContext("2d");
+            ctx.fillStyle = "#FF0000";
+
+            window.panzoom(area);
+
+            var mapInfo = {
+                sectors: { x: 30, y: 21 },
+                margins: { left: 40.5, top: 36 },
+                sectorSize: { width: 87.05, height: 87.7 }
+            };
+
+            var clearCanvas = () => { ctx.clearRect(0, 0, canvas.width, canvas.height); };
+
+            var paintGrid = () => {
+
+                ctx.lineWidth = 2;
+                ctx.strokeStyle = "rgba(0, 0, 0, 0.6)";
+
+                var maxX = mapInfo.sectors.x * mapInfo.sectorSize.width + mapInfo.margins.left,
+                    maxY = mapInfo.sectors.y * mapInfo.sectorSize.height + mapInfo.margins.top;
+                for (var i = 0; i <= mapInfo.sectors.x; i++) {
+                    var x = mapInfo.margins.left + i * mapInfo.sectorSize.width;
+                    ctx.beginPath();
+                    ctx.moveTo(x, mapInfo.margins.top);
+                    ctx.lineTo(x, maxY);
+                    ctx.closePath();
+                    ctx.stroke();
+                }
+                for (var i = 0; i <= mapInfo.sectors.y; i++) {
+                    var y = mapInfo.margins.top + i * mapInfo.sectorSize.height;
+                    ctx.beginPath();
+                    ctx.moveTo(mapInfo.margins.left, y);
+                    ctx.lineTo(maxX, y);
+                    ctx.closePath();
+                    ctx.stroke();
+                }
+            };
+
+            paintGrid();
+
+            area.addEventListener('click', e => {
+
+                clearCanvas();
+
+                paintGrid();
+
+                ctx.lineWidth = 4;
+                ctx.strokeStyle = 'red';
+
+                var x = parseInt((e.offsetX - mapInfo.margins.left) / mapInfo.sectorSize.width) * mapInfo.sectorSize.width + mapInfo.margins.left;
+                var y = parseInt((e.offsetY - mapInfo.margins.top) / mapInfo.sectorSize.height) * mapInfo.sectorSize.height + mapInfo.margins.top;
+                console.log({ x: x, y: y });
+                ctx.strokeRect(x, y, mapInfo.sectorSize.width, mapInfo.sectorSize.height);
+            });
+
+        });
+
+
+    </script>
+
+}
+
+<style type="text/css">
+
+    .body-content {
+        background-color: black;
+    }
+
+    .map {
+        height: 92vh;
+        display: inline-block;
+        position: relative;
+    }
+
+        .map > img {
+            position: fixed;
+            top: 0;
+        }
+
+        .map > canvas {
+            position: relative;
+        }
+
+</style>
+
+
+<div class="map">
+    <img src="/images/maps/map2.jpg" />
+    <canvas id="canvas"></canvas>
+</div>
+
+

@@ -1,0 +1,24 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+
+    <partial name="_DefaultHeader" />
+
+    @RenderSection("Header", required: false)
+
+</head>
+<body>
+
+    <partial name="_NavBar" />
+
+    <partial name="_CookieConsentPartial" />
+
+    <div class="container-fluid body-content">
+
+        @RenderBody()
+
+    </div>
+
+    @RenderSection("Scripts", required: false)
+</body>
+</html>
